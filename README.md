@@ -64,6 +64,67 @@ Let's have a look at the code:
 * **as** is another Python keyword. This is optional, but it allows us to declare a shorter *alias* for the library so for the rest of the notebook instead of having to type `pandas` every time we want to refer to the library, we can type something else (typically something shorter to save us some typing)
 * **pd** is the common shortening of `pandas` that most Python programmers will use. It's a good idea to follow common conventions like this so that other programmers looking at your code can understand it more easily.
 
+## Importing the Data
+
+The next step is to import the csv file and to save the information into a Pandas DataFrame. The basic code for that is pretty simple . . . Run the code and see what happens!
+
+
+```python
+df = pd.read_csv('sample_data.csv')
+```
+
+So, if the file exists, nothing happens at all - that is good! Try changing the file name and running the code and you'll see a "file not found" error. The code above is basically creating a new variable (by convention it's not unusual to call it "df" for "DataFrame" - although if you're doing something more complex you might want to give it a clearer name - perhaps company_list or something similar.
+
+The way to read the code is that the right hand side of the equals sign gets evaluated. It goes to the Pandas library (remember, we imported Pandas **as** `pd`, so whenever we refer to pd we're refering to the Pandas library) and it's calling a method on Pandas called `read_csv()` (the docs for that method are [here](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)). The minimum required parameter for that method is the name of the file to import (in this case, `sample_data.csv`), so we're calling the `read_csv()` method in Pandas, passing it the name of the file, it returns the contents of those file in a DataFrame, and we're taking that DataFrame and assigning it to the `df` variable, so if we want to do anything with it, we can just call `df`.
+
+## Looking at the Data
+
+How do we know what the data looks like or even that the data is there in the `df` variable? Well, a good starting point would be to call some of the methods that a DataFrame provides us for investigating the data within it. Let's start with the `.head()` method that shows us the first few row so we can make sure this is a list of companies - not people or sushi orders or someone's favorite surfboards! Run the code below, lets see what happens . . .
+
+
+```python
+df.head()
+```
+
+That looks promising! It's pulled in the data, taken the first row as the titles for the columns, and it's showing us the first 5 records. That's the default setting. Guess what happens if you run something like . . . 
+
+
+```python
+df.head(7)
+```
+
+Yup - that's right. `head()` takes an optional parameter for the number of records to display and defaults it to 5 if you don't set a value. Note that as with many things in Python this is zero indexed, so the count of the records is from 0-6, not 1-7!
+
+There are *lots* of other things that DataFrames can show you about your data. Once you've looked at `head()`, a good next step is to check out `info()` 
+
+
+```python
+df.info()
+```
+
+It's telling us the number of records, the number of columns, the inferred data type for each column and how many non-null entries each of the columns has! That's a pretty good start, but there are many other things we can ask the DataFrame to tell us about the data we loaded.
+
+## Summary Statistics
+
+A good next step is often to check out the summary statistics for the data set. An easy way to start to investigate that is by calling the `describe()` method:
+
+
+```python
+df.describe()
+```
+
+It takes any numeric fields in the data sets and provides a range of staistics from the number of data points to the mean, minimum, maximum and even the standard deviation and quartiles for the values. If you don't happen to know what all of those mean, don;'t worry - this is a data cleaning class, not a statistics class. Bottom line, DataFrames will tell you everythign you might want to know about a data set - along with a few things you may not even care about!
+
+If you imported a really large spreadsheet with a lot of numeric columns, you can refine your request by asking (for example) for just the mean or the median, just for one column:
+
+
+```python
+print("The mean is " + str(df["NumberofEmployees"].mean()))
+print("The median is " + str(df["NumberofEmployees"].median()))
+```
+
+There's a lot going on in the code above, but the important part is that if you just want to get the median for the NumberofEmployees column you can just run `df["NumberofEmployees"].mean()`.
+
 ## Summary
 
 
