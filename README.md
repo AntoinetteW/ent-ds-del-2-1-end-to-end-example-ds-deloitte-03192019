@@ -75,9 +75,9 @@ The next step is to import the csv file and to save the information into a Panda
 df = pd.read_csv('sample_data.csv')
 ```
 
-So, if the file exists, nothing happens at all - that is good! Try changing the file name and running the code and you'll see a "file not found" error. The code above is basically creating a new variable (by convention it's not unusual to call it "df" for "DataFrame" - although if you're doing something more complex you might want to give it a clearer name - perhaps company_list or something similar.
+So, if the file exists, nothing appears to happen - that is fine! Try changing the file name and running the code and you'll see a "file not found" error. The code above is basically creating a new variable (by convention it's not unusual to call it "df" for "DataFrame" - although if you're doing something more complex you might want to give it a clearer name - perhaps company_list or something similar).
 
-The way to read the code is that the right hand side of the equals sign gets evaluated. It goes to the Pandas library (remember, we imported Pandas **as** `pd`, so whenever we refer to pd we're refering to the Pandas library) and it's calling a method on Pandas called `read_csv()` (the docs for that method are [here](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)). The minimum required parameter for that method is the name of the file to import (in this case, `sample_data.csv`), so we're calling the `read_csv()` method in Pandas, passing it the name of the file. It returns the contents of those file in a DataFrame, and we're taking that DataFrame and assigning it to the `df` variable, so if we want to do anything with it, we can just call `df`.
+The way to read the code is that the right hand side of the equals sign gets evaluated first. It goes to the Pandas library (remember, we imported Pandas **as** `pd`, so whenever we refer to pd we're refering to the Pandas library) and it's calling a method on Pandas called `read_csv()` (the docs for that method are [here](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)). The minimum required parameter for that method is the name of the file to import (in this case, `sample_data.csv`), so we're calling the `read_csv()` method in Pandas, passing it the name of the file. It returns the contents of those file in a DataFrame, and we're taking that DataFrame and assigning it to the `df` variable, so if we want to do anything with it, we can just call the `df` variable.
 
 ## Looking at the Data
 
@@ -115,9 +115,9 @@ A good next step is often to check out the summary statistics for the data set. 
 df.describe()
 ```
 
-It takes any numeric fields in the data sets and provides a range of statistics - from the number of data points to the mean, minimum, maximum and even the standard deviation and quartiles for the values. If you don't happen to know what all of those mean, don't worry - this is a data cleaning class, not a statistics class! **Bottom line, DataFrames will tell you everything you might want to know about a data set - along with a few things you may not even care about!**
+It takes any numeric fields in the data set and provides a range of statistics - from the number of data points to the mean, minimum, maximum and even the standard deviation and quartiles for the values. If you don't happen to know what all of those mean, don't worry - this is a data cleaning class, not a statistics class! **Bottom line, DataFrames will tell you everything you might want to know about a data set - along with a few things you may not even care about!**
 
-If you imported a really large spreadsheet with a lot of numeric columns, you can refine your request by asking (for example) for just the mean or the median, just for one column:
+If you imported a really large spreadsheet with a lot of numeric columns, you can refine your request by asking (for example) for the mean or the median, for just one column:
 
 
 ```python
@@ -129,7 +129,7 @@ There's a lot going on in the code above, but the important part is that if you 
 
 ## Summary Statistics (Categorical Columns)
 
-Sometimes you might also want summary statistics for a categorical column. A categorical column is one that contains text, but only certain possible values. For example, if you were filling out a form to describe your conpany, you might have a drop down list for "company type" and "state of incorporation". Those would be categorical columns. An example of a field that is not a categorical column would be the company name or the street address.
+Sometimes you might also want summary statistics for a categorical column. A categorical column is one that contains text, but only certain possible values. For example, if you were filling out a form to describe a company, you might have a drop down list for "company type" and "state of incorporation". Those would be categorical columns because there are only so many types of corporate entities and only so many US states. An example of a field that is not a categorical column would be the company name or the street address because almost every company has a different name and street address.
 
 Let's have a look at the "EntityType" field. Lets start by getting a list of all the different values and the number of records with each value by using the `value_counts()` method:
 
@@ -194,7 +194,12 @@ Hmm, did that work? Try running the next cell and let's see!
 df2['EntityType'].value_counts()
 ```
 
-That's better! There are lots of ways of applying transformations to information stored within a DataFrame, but hopefully the two examples above have at least given you a starting point. Now the final step is to take our cleaned data, and save it back to a file...
+That's better! There are lots of ways of applying transformations to information stored within a DataFrame, but hopefully the two examples above have at least given you a starting point. 
+
+
+## Saving the Results
+
+Now the final step is to take our cleaned data, and save it back to a file...
 
 
 ```python
