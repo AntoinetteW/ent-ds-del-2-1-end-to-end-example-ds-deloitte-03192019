@@ -155,7 +155,9 @@ for i in df.index:
     print(df.at[i, 'EntityType'])
 ```
 
-That looks pretty good! Now all we need to do is write the code so the cases are consistent. We could write one piece of code for the s corps and another for the c corps, but by capitalizing everything using the `.upper()` method, we can solve all of our data issues in one go.
+You'll see that we're iterating over something called `df.index` which is simply an index - a set of incrementing numbers pointing to all of the rows in the DataFrame. If you wonder what it looks like, try replacing the print line with `print(i)` to see.
+
+OK, so we can iterate over a DataFrame and retrieve data from each row in the EntityType column. Now all we need to do is write the code to make the cases consistent. We could write one piece of code for the s corps and another for the c corps, but by capitalizing everything using the `.upper()` method, we can solve all of our data issues in one go.
 
 
 ```python
