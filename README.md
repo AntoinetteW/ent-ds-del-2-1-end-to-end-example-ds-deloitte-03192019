@@ -3,11 +3,11 @@
 
 
 ## Introduction
-In "week 0", we installed the key tools required to do data capture and cleaning with Python and to complete this course (git, GitHub and Anaconda). In week 1, we introduced the basics of Python programming - variables, some simple data types (String, Integer, Floating Point, Boolean and Date Time), some of the more complex data types (List, Tuple, Set and Dictionary), and control flow using if statements and (for looping over collections), "for-in" loops and (for extra credit) list comprehensions. *Don't worry if you're still a little confused by list comprehensions - you don't have to master them to be able to clean up data!*
+In "week 0", we installed the key tools required to do data capture and cleaning with Python and to complete this course (git, GitHub and Anaconda). In week 1, we introduced the basics of Python programming - variables, some simple data types (String, Integer, Floating Point, Boolean and Date Time), some of the more complex data types (List, Tuple, Set and Dictionary), and control flow using if statements, and (for looping over collections), "for-in" loops and (for extra credit) list comprehensions. *Don't worry if you're still a little confused by list comprehensions - you don't have to master them to be able to clean up data!*
 
 A lot of the tasks last week were "small motion" lessons. You got to practice little bits of a project, but didn't really pull it together into a more realistic end-to-end experience. Today, we're going to build on the knowledge you gained last week to do an end to end data cleaning example. We're going to import some company data, clean it up and then save it to a new file.
 
-To keep things easy, we'll just focus on cleaning up the capitalization of text from a csv file filled with company information. In a real world example you'd probably want to do more complicated clean up, but once you've seen how to do the basics, it'll be quite easy to add a little more sophistication or complexity to the data clean up in future lessons.
+To keep things easy, we'll just focus on cleaning up the capitalization and consistency of text from a csv file filled with company information. In a real world example you'd probably want to do more complicated clean up, but once you've seen how to do the basics, it'll be quite easy to add a little more sophistication or complexity to the data clean up in future lessons.
 
 We're also going to have to introduce a few new concepts along the way. We're going to introduce the concept of libraries (pre-written software that you can use to write your code more quickly), Pandas (one of the most popular libraries for working with data in Python) and the Pandas Series and DataFrame (the standard ways to store information within Pandas). It might seem like a lot of theory, but in practice you'll be using Pandas DataFrames for most of your data import, cleanup and export operations, so it's important to take the time to introduce them now.
 
@@ -104,7 +104,7 @@ df.info()
 
 It's telling us the number of records, the number of columns, the inferred data type for each column and how many non-null entries each of the columns has! That's a pretty good start, but there are many other things we can ask the DataFrame to tell us about the data we loaded.
 
-## Summary Statistics
+## Summary Statistics (Numerical Columns)
 
 A good next step is often to check out the summary statistics for the data set. An easy way to start to investigate that is by calling the `describe()` method:
 
@@ -113,7 +113,7 @@ A good next step is often to check out the summary statistics for the data set. 
 df.describe()
 ```
 
-It takes any numeric fields in the data sets and provides a range of staistics from the number of data points to the mean, minimum, maximum and even the standard deviation and quartiles for the values. If you don't happen to know what all of those mean, don;'t worry - this is a data cleaning class, not a statistics class. Bottom line, DataFrames will tell you everythign you might want to know about a data set - along with a few things you may not even care about!
+It takes any numeric fields in the data sets and provides a range of staistics from the number of data points to the mean, minimum, maximum and even the standard deviation and quartiles for the values. If you don't happen to know what all of those mean, don't worry - this is a data cleaning class, not a statistics class! **Bottom line, DataFrames will tell you everythign you might want to know about a data set - along with a few things you may not even care about!**
 
 If you imported a really large spreadsheet with a lot of numeric columns, you can refine your request by asking (for example) for just the mean or the median, just for one column:
 
@@ -123,8 +123,81 @@ print("The mean is " + str(df["NumberofEmployees"].mean()))
 print("The median is " + str(df["NumberofEmployees"].median()))
 ```
 
-There's a lot going on in the code above, but the important part is that if you just want to get the median for the NumberofEmployees column you can just run `df["NumberofEmployees"].mean()`.
+There's a lot going on in the code above, but the important part is that if you just want to get the median for the NumberofEmployees column you can just run `df["NumberofEmployees"].mean()`. Try it in the blank code cell below.
+
+## Summary Statistics (Categorical Columns)
+
+Sometimes you might also want summary statistics for a categorical column. A categorical columnis one that contains text, but only certain possible values. For example, if you were filling out a form to describe your conpany, you might have a drop down list for "company type" and "state of incorporation". Those would be categorical columns. An example of a field that is not a categorical column would be the company name.
+
+Let's have a look at the "EntityType" field. Lets start by getting a list of all the different values and the number of records with each value by using the `value_counts()` method:
+
+
+```python
+df['EntityType'].value_counts()
+```
+
+Hmm, that's interesting. It looks like we need to do a little bit of clean up on our data. You can see that Python (as with most programming languages) cares about capitalization, but it means that (for example) it thinks there are three "llc"'s and three "LLC"'s when clearly we'd rather it just tell us that there are six LLC's - irrespective of capitalization.
+
+Now, for a data set this small, we *could* just go in manually and fix all of the data, but if this was a larger data set or even a daily or weekly import, that would become tedious, so let's see if we can fix this. First wee need to figure out how to iterate over the data in a DataFrame, and then we need to take code similar to what we wrote before to fix the capitalization.
+
+## Iterating over a DataFrame
+
+Lets start by figuring out how to iterate over a DataFrame. ***Generally it's a good idea when programming to take very small steps, get them working and then put them together. Usually when you take big steps you end up spending hours falling over your own feet!***
+
+Let's start by just iterating over all the items in the EntityType column and printing them out. Lets try syntax pretty similar to that we used last week for iterating over collections - the `for ... in` syntax:
+
+
+
+```python
+for i in df.index:
+    print(df.at[i, 'EntityType'])
+```
+
+That looks pretty good! Now all we need to do is write the code so the cases are consistent. We could write one piece of code for the s corps and another for the c corps, but by capitalizing everything using the `.upper()` method, we can solve all of our data issues in one go.
+
+
+```python
+for i in df.index:
+    df.at[i, 'EntityType'] = df.at[i, 'EntityType'].upper()
+    print(df.at[i, 'EntityType'])
+```
+
+## Using Selectors to Tranform DataFrames
+
+While it's possible (and sometimes useful) to iterate over all of the values for a column in a DataFrame, it's also possible to shortcut the process by using selectors. Lets say I want to take every value in the EntityType column that has a value of "llc" and replace it with "LLC", the following code will do that.
+
+
+```python
+# Lets start by reloading the initial data
+df2 = pd.read_csv('sample_data.csv')
+
+df2.loc[df2["EntityType"] == "llc", "EntityType"] = "LLC"
+```
+
+Hmm, did that work? Try running the next cell and let's see!
+
+
+```python
+df2['EntityType'].value_counts()
+```
+
+That's better! There are lots of ways of applying transformations to information stored within a DataFrame, but hopefully the two examples above have at least given you a starting point. Now the final step is to take our cleaned data, and save it back to a file...
+
+
+```python
+df.to_csv('updated_data.csv')
+```
+
+Finally, we just need to check that the export worked by reading the data in and looking at it again . . .
+
+
+```python
+df = pd.read_csv('updated_data.csv')
+df.head()
+```
+
+Looks like it all worked well!
 
 ## Summary
 
-
+In this lesson we introduced the idea of libraries, the Pandas library in particular, and within that the DataFrame capability for importing, inspecting, transforming and outputting "spreadsheet like" data. It's an incredibly powerful toolkit. Don't worry if you are a little overwhelmed by all the things that it can do. It's a powerful tool and as we progress in the course you'll become increasingly comfortable working with it.
